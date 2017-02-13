@@ -1,4 +1,4 @@
-package app.compass;
+package my.compass;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.widget.TextView;
  * Created by Christopher D. Harte on 06/02/2017.
  */
 
-class About extends Activity
+public class About extends Activity
 {
     @Override protected void onCreate(Bundle savedInstanceState)
     {

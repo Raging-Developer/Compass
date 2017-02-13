@@ -1,4 +1,4 @@
-package app.compass;
+package my.compass;
 
 import android.Manifest;
 import android.app.Activity;
@@ -61,6 +61,7 @@ public class Compass_activity extends Activity implements SensorEventListener,
     private float          current_degree = 0f;
     private ProgressDialog dialog;
     private List<Address> address_info;
+    private final int REQ_CODE = 111;
 
     private GoogleApiClient api_client;
 
@@ -111,7 +112,7 @@ public class Compass_activity extends Activity implements SensorEventListener,
             {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.INTERNET,
-                        Manifest.permission.ACCESS_NETWORK_STATE}, 1);
+                        Manifest.permission.ACCESS_NETWORK_STATE}, REQ_CODE);
             }
         }
 
@@ -161,6 +162,22 @@ public class Compass_activity extends Activity implements SensorEventListener,
         Toast.makeText(getBaseContext(), "There is no gps available " + provider,
                 Toast.LENGTH_LONG)
                 .show();
+    }
+
+    @Override public void onRequestPermissionsResult(int req_code, String[] perms, int[] grants)
+    {
+        switch (req_code)
+        {
+            case REQ_CODE:
+                if (grants[0] != PackageManager.PERMISSION_GRANTED)
+                {
+                    Toast.makeText(this, "Location access denied!", Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            default:
+                super.onRequestPermissionsResult(req_code, perms, grants);
+        }
     }
 
     @Override public void onConnectionSuspended (int arg0)

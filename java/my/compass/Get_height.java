@@ -1,4 +1,4 @@
-package app.compass;
+package my.compass;
 
 import android.os.AsyncTask;
 
@@ -52,7 +52,7 @@ class Get_height
             {
                 //53.518051,-2.268018 without quotes and my api key stuck on the end
                 String query = String.format("https://maps.googleapis.com/maps/api/elevation/json?"
-                        + "locations=%s&key=", params[0]);
+                        + "locations=%s&key=AIzaSyD1bfNKg0AaATvlWFW0VXINLKcMR4PXw6g", params[0]);
 
 
                 try
