@@ -28,8 +28,8 @@ class Get_height
     /**
      * Run in background to get the altitude from the google api
      * according to the evil google I cannot use this value except on
-     * a google map. Did you know that the full google url is
-     * hereatgooglewearetryingtobemoreevilthanathousandhitlers.com
+     * a google map. Let us see if they notice. They appear to be watching
+     * everything else in the world.
      * @param compass Compass_activity
      *
      */
