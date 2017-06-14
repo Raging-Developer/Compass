@@ -103,12 +103,13 @@ public class Compass_activity extends Activity implements SensorEventListener,
 
     @Override public void onConnected(Bundle con_hint)
     {
-        //Fucking evil google nazi fuckers. The manifest is now no longer good enough
+        //Evil google documentation. No mention of the callback and the fact that
+        //the manifest is now no longer good enough. 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            int fuckup1 = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+            int lookup1 = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
 
-            if (fuckup1 != PackageManager.PERMISSION_GRANTED)
+            if (lookup1 != PackageManager.PERMISSION_GRANTED)
             {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.INTERNET,
