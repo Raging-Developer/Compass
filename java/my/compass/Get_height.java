@@ -22,9 +22,6 @@ class Get_height
 {
     private Compass_activity compass;
     private Exception error;
-
-
-
     /**
      * Run in background to get the altitude from the google api
      * according to the evil google I cannot use this value except on
@@ -47,12 +44,11 @@ class Get_height
     {
         new AsyncTask<String, Void, String>()
         {
-
             @Override protected String doInBackground(String... params)
             {
                 //53.518051,-2.268018 without quotes and my api key stuck on the end
                 String query = String.format("https://maps.googleapis.com/maps/api/elevation/json?"
-                        + "locations=%s&key=AIzaSyD1bfNKg0AaATvlWFW0VXINLKcMR4PXw6g", params[0]);
+                        + "locations=%s&key=removed", params[0]);
 
 
                 try

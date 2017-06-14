@@ -62,9 +62,7 @@ public class Compass_activity extends Activity implements SensorEventListener,
     private ProgressDialog dialog;
     private List<Address> address_info;
     private final int REQ_CODE = 111;
-
     private GoogleApiClient api_client;
-
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -116,7 +114,6 @@ public class Compass_activity extends Activity implements SensorEventListener,
                         Manifest.permission.ACCESS_NETWORK_STATE}, REQ_CODE);
             }
         }
-
 
         Get_height get_h = new Get_height(this);
 
@@ -252,7 +249,6 @@ public class Compass_activity extends Activity implements SensorEventListener,
         {
             return true;
         }
-
         return false;
     }
 
@@ -333,9 +329,6 @@ public class Compass_activity extends Activity implements SensorEventListener,
                 break;
 
         }
-
-        // return super.onOptionsItemSelected(item);
         return false;
     }
-
 }
