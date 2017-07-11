@@ -311,7 +311,7 @@ public class Compass_activity extends Activity implements SensorEventListener,
         switch (item.getItemId())
         {
             case R.id.about_app :
-                Intent a = new Intent("app.compass.ABOUT");
+                Intent a = new Intent("my.compass.ABOUT");
                 a.putExtra("title", "A compass");
                 a.putExtra("body", "This is a plain compass which points to magnetic, not true, north.\n"
                         + "It relies on the accelerometer, so moving about helps.\n"
