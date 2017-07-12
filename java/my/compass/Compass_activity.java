@@ -255,14 +255,26 @@ public class Compass_activity extends Activity implements SensorEventListener,
 
     /**
      * Called from the background task that gets the height from the google api.
-     *
+     * The height may be a whole interger, so account for that.
      * @param elev String
      */
     public void got_height(String elev)
     {
         dialog.dismiss();
 
-        String heights = elev.substring(0, 8);// round it down a bit, but not too much, I might be on K2 one day
+        String heights;
+        int s_leng = elev.length();
+
+        // round it down a bit, but not too much, I might be on K2 one day
+        if (s_leng < 8)
+        {
+            heights = elev.substring(0, s_leng);
+        }
+        else
+        {
+            heights = elev.substring(0, 8);
+        }
+
         String city    = address_info.get(0).getLocality();
         String town    = address_info.get(0).getSubLocality();
         String street  = address_info.get(0).getThoroughfare();
@@ -279,7 +291,6 @@ public class Compass_activity extends Activity implements SensorEventListener,
         }
 
         String outs = "You are at " + place + " at a height of " + heights + " metres.";
-
 
         show_elevation.setText(outs);
     }
