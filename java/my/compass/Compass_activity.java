@@ -25,13 +25,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,6 +64,9 @@ public class Compass_activity extends Activity implements SensorEventListener,
     private final int REQ_CODE = 111;
     private GoogleApiClient api_client;
 
+    private double latitude = 0.0;
+    private double longitude = 0.0;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -72,19 +75,50 @@ public class Compass_activity extends Activity implements SensorEventListener,
         show_elevation = (TextView) findViewById(R.id.tv_elevation);
         rose           = (ImageView) findViewById(R.id.rose_image);
         my_sensor      = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accel          = my_sensor.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magne          = my_sensor.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        if (my_sensor != null)
+        {
+            accel = my_sensor.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            magne = my_sensor.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        }
 
         // This might take a bit of time
         dialog = new ProgressDialog(this);
         dialog.setMessage("Just finding where you are...");
         dialog.show();
 
+        //Evil google documentation. No mention of the callback and the fact that
+        //the manifest is now no longer good enough.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            int lookup1 = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (lookup1 != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.ACCESS_NETWORK_STATE}, REQ_CODE);
+            }
+        }
+
         api_client = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
+        FusedLocationProviderClient fused_client = LocationServices.getFusedLocationProviderClient(this);
+        fused_client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>()
+        {
+            @Override public void onSuccess(Location location)
+            {
+                if (location != null)
+                {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                }
+            }
+        });
     }
 
     @Override protected void onStart()
@@ -101,36 +135,12 @@ public class Compass_activity extends Activity implements SensorEventListener,
 
     @Override public void onConnected(Bundle con_hint)
     {
-        //Evil google documentation. No mention of the callback and the fact that
-        //the manifest is now no longer good enough.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            int lookup1 = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-
-            if (lookup1 != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.INTERNET,
-                        Manifest.permission.ACCESS_NETWORK_STATE}, REQ_CODE);
-            }
-        }
-
         Get_height get_h = new Get_height(this);
 
         if (test_connection())
         {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(api_client);
+//            Location location = LocationServices.FusedLocationApi.getLastLocation(api_client);
             Geocoder geo = new Geocoder(this, Locale.getDefault());
-
-            double latitude = 53.5333;
-            double longitude = -2.2833;
-
-            if (location != null)
-            {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-            }
-
             address_info = null;
 
             try
@@ -242,12 +252,15 @@ public class Compass_activity extends Activity implements SensorEventListener,
     public boolean test_connection()
     {
         ConnectivityManager conn = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo net_info     = conn.getActiveNetworkInfo();
 
-        if (net_info != null
-            && net_info.isConnectedOrConnecting())
+        if (conn != null)
         {
-            return true;
+            NetworkInfo net_info = conn.getActiveNetworkInfo();
+
+            if (net_info.isConnectedOrConnecting())
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -262,7 +275,7 @@ public class Compass_activity extends Activity implements SensorEventListener,
     {
         dialog.dismiss();
 
-        String heights;
+       String heights;
         int s_leng = elev.length();
 
         // round it down a bit, but not too much, I might be on K2 one day
