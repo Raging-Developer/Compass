@@ -82,11 +82,6 @@ public class Compass_activity extends Activity implements SensorEventListener,
             magne = my_sensor.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         }
 
-        // This might take a bit of time
-        dialog = new ProgressDialog(this);
-        dialog.setMessage("Just finding where you are...");
-        dialog.show();
-
         //Evil google documentation. No mention of the callback and the fact that
         //the manifest is now no longer good enough.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -100,6 +95,11 @@ public class Compass_activity extends Activity implements SensorEventListener,
                         Manifest.permission.ACCESS_NETWORK_STATE}, REQ_CODE);
             }
         }
+
+        // This might take a bit of time
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Just finding where you are...");
+        dialog.show();
 
         api_client = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -124,7 +124,10 @@ public class Compass_activity extends Activity implements SensorEventListener,
     @Override protected void onStart()
     {
         super.onStart();
-        api_client.connect();
+        if (api_client != null)
+        {
+            api_client.connect();
+        }
     }
 
     @Override protected void onStop()
