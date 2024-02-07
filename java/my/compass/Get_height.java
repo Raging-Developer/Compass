@@ -16,12 +16,11 @@ import java.net.URLConnection;
 /**
  * Get the current altitude from the Evil ones at Google.
  * They won't like it because I am not using it with their maps, so tough.
- * Created by Christopher D. Harte on 06/02/2017.
  */
 
-class Get_height
+public class Get_height
 {
-    private Compass_activity this_compass;
+    private final Compass_activity this_compass;
     private static Exception error;
     /**
      * Run in background to get the altitude from the google api
@@ -31,8 +30,7 @@ class Get_height
      * @param compass Compass_activity
      *
      */
-    Get_height(Compass_activity compass)
-    {
+    public Get_height(Compass_activity compass) {
         super();
         this_compass = compass;
     }
@@ -41,32 +39,29 @@ class Get_height
      * Get the altitude of your current location
      * @param  lat_and_long String
      */
-    void altitude(String lat_and_long)
-    {
-        My_async task = new My_async(this_compass);
+    void altitude(String lat_and_long) {
+        Async_for_weak_reference task = new Async_for_weak_reference(this_compass);
         task.execute(lat_and_long);
     }
 
-    private static class My_async extends AsyncTask<String, Void, String>
-    {
-        private WeakReference<Compass_activity> weak_ref;
+    private static class Async_for_weak_reference extends AsyncTask<String, Void, String> {
+        private final WeakReference<Compass_activity> weak_ref;
 
-        My_async(Compass_activity compass)
-        {
-            weak_ref = new WeakReference<Compass_activity>(compass);
+        Async_for_weak_reference(Compass_activity compass) {
+            weak_ref = new WeakReference<>(compass);
         }
 
-        @Override protected String doInBackground(String... params)
-        {
-            //53.518051,-2.268018 without quotes and my api key stuck on the end
+        @Override
+        protected String doInBackground(String... params) {
+            //53.,-2. without quotes and my api key stuck on the end
             String query = String.format("https://maps.googleapis.com/maps/api/elevation/json?"
                     + "locations=%s&key=AIzaSyD1bfNKg0AaATvlWFW0VXINLKcMR4PXw6g", params[0]);
 
             try
             {
-                URL url    = new URL(query);
-                URLConnection conn   = url.openConnection();
-                InputStream input  = conn.getInputStream();
+                URL            url    = new URL(query);
+                URLConnection  conn   = url.openConnection();
+                InputStream    input  = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                 StringBuilder  result = new StringBuilder();
                 String         line;
@@ -86,18 +81,15 @@ class Get_height
             return null;
         }
 
-        @Override protected void onPostExecute(String result)
-        {
-//                super.onPostExecute(result);
+        @Override
+        protected void onPostExecute(String result) {
             final Compass_activity weak_compass = weak_ref.get();
 
-            if (result == null && error != null)
-            {
+            if (result == null && error != null) {
                 weak_compass.got_height_fail(error);
             }
 
-            try
-            {
+            try {
                 //Json array, not an object, just to confuse me.
                 JSONObject data        = new JSONObject (result);
                 JSONArray  q_result    = data.optJSONArray("results");
@@ -105,8 +97,7 @@ class Get_height
 
                 weak_compass.got_height(this_height);
             }
-            catch (JSONException e)
-            {
+            catch (JSONException e) {
                 weak_compass.got_height_fail(e);
             }
         }
