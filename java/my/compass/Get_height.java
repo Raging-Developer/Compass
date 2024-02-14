@@ -55,7 +55,7 @@ public class Get_height
         protected String doInBackground(String... params) {
             //53.,-2. without quotes and my api key stuck on the end
             String query = String.format("https://maps.googleapis.com/maps/api/elevation/json?"
-                    + "locations=%s&key=AIzaSyD1bfNKg0AaATvlWFW0VXINLKcMR4PXw6g", params[0]);
+                    + "locations=%s&key=", params[0]);
 
             try
             {
