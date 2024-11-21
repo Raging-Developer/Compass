@@ -127,7 +127,7 @@ public class Compass_activity extends AppCompatActivity implements SensorEventLi
     }
 
     private void use_lat_and_long() {
-        Get_height get_h = new Get_height(this);
+//        Get_height get_h = new Get_height(this);
 
         if(test_connection()) {
             Geocoder geo = new Geocoder(this, Locale.getDefault());
@@ -142,7 +142,8 @@ public class Compass_activity extends AppCompatActivity implements SensorEventLi
             }
 
             String alti = latitude + "," + longitude;
-            get_h.altitude(alti);
+//            get_h.altitude(alti);
+            Get_height_newKt.get_height_new(this, alti);
         }
         else {
             dialog.dismiss();
