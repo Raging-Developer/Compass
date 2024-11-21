@@ -29,7 +29,7 @@ fun get_height_new(compass: Compass_activity, params: String) {
     executor.execute {
         val query = String.format(
             "https://maps.googleapis.com/maps/api/elevation/json?"
-                    + "locations=%s&key=AIzaSyD1bfNKg0AaATvlWFW0VXINLKcMR4PXw6g", params
+                    + "locations=%s&key=Ag", params
         )
 
         try {
